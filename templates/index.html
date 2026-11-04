@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Boda {{ couple_names }} | Comparte tus Fotos y Videos</title>
+  <!-- Fuentes elegantes de Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-cream: #faf7f2;
+      --card-bg: #ffffff;
+      --gold: #bfa15f;
+      --gold-dark: #9e7f3b;
+      --gold-light: #f5eedf;
+      --text-dark: #2c2a29;
+      --text-muted: #736d67;
+      --border-color: #e8e2d8;
+      --success: #38a169;
+      --error: #e53e3e;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 24px rgba(191, 161, 95, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 14px 40px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Encabezado */
+    .header {
+      text-align: center;
+      margin-top: 12px;
+      margin-bottom: 24px;
+    }
+
+    .floral-accent {
+      color: var(--gold);
+      font-size: 20px;
+      letter-spacing: 4px;
+      margin-bottom: 4px;
+    }
+
+    .couple-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.1;
+      margin: 6px 0;
+    }
+
+    .event-badge {
+      display: inline-block;
+      background: var(--gold-light);
+      color: var(--gold-dark);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    .welcome-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-top: 14px;
+      padding: 0 10px;
+    }
+
+    /* Tarjeta principal */
+    .upload-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 24px 20px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+
+    /* Campo nombre */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fdfcfb;
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(191, 161, 95, 0.15);
+      background: #fff;
+    }
+
+    /* Zona de selección de archivos */
+    .dropzone {
+      border: 2px dashed var(--gold);
+      background: #fcfaf7;
+      border-radius: 18px;
+      padding: 28px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropzone:active, .dropzone.dragover {
+      background: var(--gold-light);
+      border-color: var(--gold-dark);
+      transform: scale(0.99);
+    }
+
+    .dropzone-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--gold-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      color: var(--gold-dark);
+    }
+
+    .dropzone-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+
+    .dropzone-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Botones de acción rápida */
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      background: #fff;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    /* Grilla de previsualizaciones */
+    .preview-section {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #e2e8f0;
+      border: 1px solid var(--border-color);
+    }
+
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-item .video-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .preview-item .remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Botón de subida */
+    .upload-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(191, 161, 95, 0.35);
+      margin-top: 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .upload-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 3px 10px rgba(191, 161, 95, 0.25);
+    }
+
+    /* Barra de progreso */
+    .progress-section {
+      display: none;
+      margin-top: 20px;
+      background: #fdfcfb;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold) 0%, #38a169 100%);
+      transition: width 0.3s ease;
+      border-radius: 10px;
+    }
+
+    /* Pantalla de éxito */
+    .success-card {
+      display: none;
+      text-align: center;
+      padding: 30px 10px 10px;
+    }
+
+    .success-icon {
+      font-size: 52px;
+      margin-bottom: 12px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .success-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .success-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .btn-more {
+      background: var(--gold-light);
+      color: var(--gold-dark);
+      border: 1.5px solid var(--gold);
+      padding: 12px 24px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Pie de página */
+    .footer {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    .footer a {
+      color: var(--gold-dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Encabezado con nombres de los novios -->
+    <header class="header">
+      <div class="floral-accent">✦ ❧ ✦</div>
+      <h1 class="couple-title">{{ couple_names }}</h1>
+      <span class="event-badge">{{ event_date }}</span>
+      <p class="welcome-text">{{ welcome_message }}</p>
+    </header>
+
+    <!-- Tarjeta de subida -->
+    <div class="upload-card">
+      
+      <!-- Contenido de subida (formulario) -->
+      <div id="uploadFormView">
+        
+        <!-- Nombre del invitado -->
+        <div class="form-group">
+          <label class="form-label" for="guestName">¿Quién toma la foto? ✍️ (Opcional)</label>
+          <input type="text" id="guestName" class="form-input" placeholder="Tu nombre o apodo (ej: Tía Laura, Carlos)">
+        </div>
+
+        <!-- Zona Dropzone / Selector -->
+        <div class="dropzone" id="dropzone">
+          <div class="dropzone-icon">
+            <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div class="dropzone-title">Toca aquí para elegir fotos o videos</div>
+          <div class="dropzone-subtitle">Puedes elegir varios archivos a la vez</div>
+        </div>
+
+        <!-- Botones rápidos (Galería / Cámara) -->
+        <div class="quick-actions">
+          <button type="button" class="btn-action" id="btnPickGallery">
+            <span>🖼️</span> Galería
+          </button>
+          <button type="button" class="btn-action" id="btnPickCamera">
+            <span>📷</span> Abrir Cámara
+          </button>
+        </div>
+
+        <!-- Inputs de archivos ocultos -->
+        <input type="file" id="fileInput" multiple accept="image/*,video/*" style="display: none;">
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+
+        <!-- Vista previa de fotos/videos seleccionados -->
+        <div class="preview-section" id="previewSection">
+          <div class="preview-header">
+            <span id="fileCountText">0 archivos seleccionados</span>
+            <span id="totalSizeText">0 MB</span>
+          </div>
+          <div class="preview-grid" id="previewGrid"></div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="progress-section" id="progressSection">
+          <div class="progress-info">
+            <span id="progressStatus">Subiendo recuerdos...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+        </div>
+
+        <!-- Botón de subir -->
+        <button type="button" class="upload-btn" id="uploadBtn">
+          <span>Subir recuerdos</span>
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </button>
+
+      </div>
+
+      <!-- Pantalla de agradecimiento / éxito -->
+      <div class="success-card" id="successView">
+        <div class="success-icon">❤️✨</div>
+        <h2 class="success-title">¡Muchas Gracias!</h2>
+        <p class="success-desc">
+          Tus fotos y videos se han guardado con éxito en el álbum de los novios. ¡Gracias por hacer este día inolvidable!
+        </p>
+        <button type="button" class="btn-more" id="btnUploadMore">
+          Subir más fotos o videos
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+      <p>Hecho con amor para {{ couple_names }}</p>
+      <p style="margin-top: 4px;"><a href="/qr">Ver tarjeta QR para imprimir</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // Variables de estado
+    let selectedFiles = [];
+    
+    // Elementos DOM
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const cameraInput = document.getElementById('cameraInput');
+    const btnPickGallery = document.getElementById('btnPickGallery');
+    const btnPickCamera = document.getElementById('btnPickCamera');
+    const previewSection = document.getElementById('previewSection');
+    const previewGrid = document.getElementById('previewGrid');
+    const fileCountText = document.getElementById('fileCountText');
+    const totalSizeText = document.getElementById('totalSizeText');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const guestNameInput = document.getElementById('guestName');
+    const progressSection = document.getElementById('progressSection');
+    const progressStatus = document.getElementById('progressStatus');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const uploadFormView = document.getElementById('uploadFormView');
+    const successView = document.getElementById('successView');
+    const btnUploadMore = document.getElementById('btnUploadMore');
+
+    // Manejadores de eventos de clics
+    dropzone.addEventListener('click', () => fileInput.click());
+    btnPickGallery.addEventListener('click', () => fileInput.click());
+    btnPickCamera.addEventListener('click', () => cameraInput.click());
+
+    // Drag and drop en PC / tablets
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      if (dt.files && dt.files.length) {
+        handleFilesAdded(dt.files);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFilesAdded(e.target.files);
+    });
+
+    cameraInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFilesAdded(e.target.files);
+    });
+
+    // Agregar archivos a la lista
+    function handleFilesAdded(files) {
+      for (const file of files) {
+        // Evitar duplicados por nombre y tamaño
+        if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+          selectedFiles.push(file);
+        }
+      }
+      updatePreviewGrid();
+    }
+
+    // Actualizar previsualización
+    function updatePreviewGrid() {
+      previewGrid.innerHTML = '';
+
+      if (selectedFiles.length === 0) {
+        previewSection.style.display = 'none';
+        uploadBtn.style.display = 'none';
+        return;
+      }
+
+      previewSection.style.display = 'block';
+      uploadBtn.style.display = 'flex';
+
+      let totalBytes = 0;
+
+      selectedFiles.forEach((file, index) => {
+        totalBytes += file.size;
+
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+
+        const isVideo = file.type.startsWith('video/');
+
+        if (isVideo) {
+          const video = document.createElement('video');
+          video.src = URL.createObjectURL(file);
+          video.muted = true;
+          video.playsInline = true;
+          item.appendChild(video);
+
+          const badge = document.createElement('div');
+          badge.className = 'video-badge';
+          badge.textContent = '▶ VIDEO';
+          item.appendChild(badge);
+        } else {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          item.appendChild(img);
+        }
+
+        // Botón para quitar
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerHTML = '✕';
+        removeBtn.onclick = (e) => {
+          e.stopPropagation();
+          selectedFiles.splice(index, 1);
+          updatePreviewGrid();
+        };
+        item.appendChild(removeBtn);
+
+        previewGrid.appendChild(item);
+      });
+
+      fileCountText.textContent = `${selectedFiles.length} archivo${selectedFiles.length > 1 ? 's' : ''}`;
+      const totalMB = (totalBytes / (1024 * 1024)).toFixed(1);
+      totalSizeText.textContent = `${totalMB} MB`;
+      uploadBtn.querySelector('span').textContent = `Subir ${selectedFiles.length} recuerdo${selectedFiles.length > 1 ? 's' : ''}`;
+    }
+
+    // Subida secuencial con barra de progreso
+    uploadBtn.addEventListener('click', async () => {
+      if (selectedFiles.length === 0) return;
+
+      const guestName = guestNameInput.value.trim();
+      uploadBtn.disabled = true;
+      uploadBtn.style.opacity = '0.6';
+      dropzone.style.pointerEvents = 'none';
+      progressSection.style.display = 'block';
+
+      const total = selectedFiles.length;
+      let completed = 0;
+      let errors = 0;
+
+      for (let i = 0; i < total; i++) {
+        const file = selectedFiles[i];
+        progressStatus.textContent = `Subiendo ${i + 1} de ${total}: ${file.name.substring(0, 16)}...`;
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        if (guestName) formData.append('guest_name', guestName);
+
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await res.json();
+          if (data.success) {
+            completed++;
+          } else {
+            errors++;
+            console.error('Error subiendo archivo:', data.error);
+          }
+        } catch (err) {
+          errors++;
+          console.error('Fallo en petición:', err);
+        }
+
+        const pct = Math.round(((i + 1) / total) * 100);
+        progressPercent.textContent = `${pct}%`;
+        progressBarFill.style.width = `${pct}%`;
+      }
+
+      // Finalizado
+      setTimeout(() => {
+        uploadFormView.style.display = 'none';
+        successView.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 600);
+    });
+
+    // Botón para subir más
+    btnUploadMore.addEventListener('click', () => {
+      selectedFiles = [];
+      updatePreviewGrid();
+      uploadBtn.disabled = false;
+      uploadBtn.style.opacity = '1';
+      dropzone.style.pointerEvents = 'auto';
+      progressSection.style.display = 'none';
+      progressBarFill.style.width = '0%';
+      successView.style.display = 'none';
+      uploadFormView.style.display = 'block';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjeta QR de Boda | Imprimir para las mesas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --card-bg: #fdfbf7;
+      --gold: #bfa15f;
+      --gold-dark: #9e7f3b;
+      --text-dark: #2c2a29;
+      --text-muted: #6c757d;
+      --border-gold: #c5a059;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Panel de controles (no se imprime) */
+    .controls-panel {
+      background: #ffffff;
+      max-width: 650px;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+
+    .panel-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .buttons-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-dark);
+    }
+
+    .btn-secondary {
+      background: #edf2f7;
+      color: var(--text-dark);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    /* Vista previa de la tarjeta para las mesas */
+    .card-preview-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .wedding-card {
+      width: 440px;
+      height: 600px;
+      background: var(--card-bg);
+      border: 2px solid var(--border-gold);
+      position: relative;
+      padding: 30px 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    /* Marco interno ornamental */
+    .wedding-card::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border: 1px solid var(--border-gold);
+      pointer-events: none;
+    }
+
+    .card-header-ornament {
+      color: var(--border-gold);
+      font-size: 16px;
+      letter-spacing: 4px;
+    }
+
+    .card-couple {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.1;
+      margin: 4px 0 2px;
+    }
+
+    .card-subtitle {
+      font-size: 0.95rem;
+      color: var(--border-gold);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .card-callout {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Contenedor del QR */
+    .qr-box {
+      background: #ffffff;
+      padding: 12px;
+      border: 1.5px solid var(--border-gold);
+      border-radius: 8px;
+      margin: 10px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .qr-box img {
+      width: 180px;
+      height: 180px;
+      display: block;
+    }
+
+    /* Pasos */
+    .instructions-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--border-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .steps-list {
+      list-style: none;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--text-dark);
+    }
+
+    .steps-list li {
+      margin-bottom: 3px;
+    }
+
+    .card-url {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      word-break: break-all;
+    }
+
+    .card-footer-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--border-gold);
+    }
+
+    /* Reglas para imprimir directamente (Ctrl+P) */
+    @media print {
+      body {
+        background: transparent;
+        padding: 0;
+      }
+      .controls-panel, .header-link {
+        display: none !important;
+      }
+      .wedding-card {
+        box-shadow: none;
+        page-break-inside: avoid;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Panel de control -->
+  <div class="controls-panel">
+    <div class="panel-title">
+      <span>🖨️</span> Configurar e Imprimir Tarjeta QR de Mesa
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group" style="flex: 2;">
+        <label for="urlInput">URL a donde lleva el QR</label>
+        <input type="text" id="urlInput" value="{{ default_url }}" placeholder="https://tu-boda.vercel.app">
+      </div>
+      <div class="form-group">
+        <label for="namesInput">Nombres de los Novios</label>
+        <input type="text" id="namesInput" value="{{ couple_names }}">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="dateInput">Fecha / Frase del pie</label>
+        <input type="text" id="dateInput" value="{{ event_date }}">
+      </div>
+    </div>
+
+    <div class="buttons-row">
+      <button class="btn btn-primary" onclick="window.print()">
+        <span>🖨️</span> Imprimir Tarjeta (Ctrl+P)
+      </button>
+      <a id="btnDownload" class="btn btn-secondary" href="#" download="tarjeta_qr_boda.png">
+        <span>💾</span> Descargar Tarjeta PNG
+      </a>
+      <a href="/" class="btn btn-secondary header-link" style="margin-left: auto;">
+        <span>📱</span> Ir a Vista de Invitado
+      </a>
+    </div>
+  </div>
+
+  <!-- Vista previa de la tarjeta para las mesas -->
+  <div class="card-preview-container">
+    <div class="wedding-card" id="cardElement">
+      
+      <div>
+        <div class="card-header-ornament">—  ✦  —</div>
+        <h2 class="card-couple" id="cardCoupleText">{{ couple_names }}</h2>
+        <div class="card-subtitle">¿Tomaste fotos o videos hoy?</div>
+        <div class="card-callout">¡Ayúdanos a guardar cada recuerdo de nuestra boda!</div>
+      </div>
+
+      <div class="qr-box">
+        <img id="qrImage" src="/api/generate-qr?card=false&url={{ default_url }}" alt="Código QR Boda">
+      </div>
+
+      <div>
+        <div class="instructions-title">¿CÓMO COMPARTIRLAS?</div>
+        <ul class="steps-list">
+          <li><strong>1.</strong> Abre la cámara de tu teléfono móvil</li>
+          <li><strong>2.</strong> Apunta y escanea este código QR</li>
+          <li><strong>3.</strong> Selecciona tus fotos y videos favoritos</li>
+        </ul>
+        <div class="card-url" id="cardUrlText">{{ default_url }}</div>
+      </div>
+
+      <div class="card-footer-date" id="cardDateText">{{ event_date }}</div>
+
+    </div>
+  </div>
+
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const namesInput = document.getElementById('namesInput');
+    const dateInput = document.getElementById('dateInput');
+    const qrImage = document.getElementById('qrImage');
+    const cardCoupleText = document.getElementById('cardCoupleText');
+    const cardDateText = document.getElementById('cardDateText');
+    const cardUrlText = document.getElementById('cardUrlText');
+    const btnDownload = document.getElementById('btnDownload');
+
+    function updatePreview() {
+      const url = encodeURIComponent(urlInput.value.trim() || window.location.origin);
+      const couple = encodeURIComponent(namesInput.value.trim());
+      const date = encodeURIComponent(dateInput.value.trim());
+
+      cardCoupleText.textContent = namesInput.value.trim();
+      cardDateText.textContent = dateInput.value.trim();
+      cardUrlText.textContent = urlInput.value.trim();
+
+      // Actualizar imagen QR central
+      qrImage.src = `/api/generate-qr?card=false&url=${url}&t=${Date.now()}`;
+
+      // Actualizar enlace de descarga de la tarjeta de alta resolución
+      btnDownload.href = `/api/generate-qr?card=true&url=${url}&couple=${couple}&date=${date}`;
+    }
+
+    urlInput.addEventListener('input', updatePreview);
+    namesInput.addEventListener('input', updatePreview);
+    dateInput.addEventListener('input', updatePreview);
+
+    // Inicializar
+    updatePreview();
+  </script>
+</body>
+</html>
