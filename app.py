@@ -69,10 +69,20 @@ def upload():
 @app.route("/qr")
 def qr_page():
     """Página para previsualizar, personalizar e imprimir la tarjeta QR de las mesas."""
-    # Sugerir la IP de la red Wi-Fi para que funcione en celulares
-    port = int(os.getenv("PORT", 5000))
-    lan_ip = get_local_ip()
-    suggested_url = f"http://{lan_ip}:{port}" if lan_ip != "127.0.0.1" else request.host_url.rstrip("/")
+    host = request.host.lower()
+    proto = request.headers.get("X-Forwarded-Proto", "https" if ("render.com" in host or "vercel.app" in host) else request.scheme)
+
+    # Si estamos en Render, Vercel o cualquier dominio en internet:
+    is_cloud = "localhost" not in host and "127.0.0.1" not in host and not host.startswith("192.168.")
+    
+    if is_cloud:
+        suggested_url = f"{proto}://{request.host}".rstrip("/")
+    else:
+        # En desarrollo local en tu casa:
+        port = int(os.getenv("PORT", 5000))
+        lan_ip = get_local_ip()
+        suggested_url = f"http://{lan_ip}:{port}" if lan_ip != "127.0.0.1" else request.host_url.rstrip("/")
+
     return render_template(
         "qr.html",
         couple_names=COUPLE_NAMES,
