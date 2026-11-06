@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tarjeta QR de Boda | Imprimir para las mesas</title>
+  <title>Tarjeta QR de Mesa | {{ couple_names }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg: #f4efe6;
-      --card-bg: #fdfbf7;
-      --gold: #bfa15f;
-      --gold-dark: #9e7f3b;
-      --text-dark: #2c2a29;
-      --text-muted: #6c757d;
-      --border-gold: #c5a059;
+      --color-teal: #186b62;
+      --color-teal-dark: #12544d;
+      --color-mauve: #b87b87;
+      --color-mauve-light: #f7eded;
+      --color-border: #dfc7c7;
+      --card-bg: #fcf9f9;
+      --text-dark: #2c2728;
+      --text-muted: #7a6669;
     }
 
     * {
@@ -27,29 +28,31 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background: var(--bg);
+      background: linear-gradient(180deg, #eaf3f1 0%, #f7f0f0 100%);
       color: var(--text-dark);
       padding: 24px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
 
-    /* Panel de controles (no se imprime) */
+    /* Panel de controles (oculto al imprimir) */
     .controls-panel {
       background: #ffffff;
       max-width: 650px;
       width: 100%;
       padding: 20px 24px;
-      border-radius: 18px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(184, 123, 135, 0.15);
+      border: 1px solid var(--color-border);
       margin-bottom: 24px;
     }
 
     .panel-title {
       font-size: 1.15rem;
       font-weight: 600;
-      color: var(--text-dark);
+      color: var(--color-teal);
       margin-bottom: 14px;
       display: flex;
       align-items: center;
@@ -70,9 +73,9 @@
 
     label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      color: var(--text-muted);
+      color: var(--color-teal);
       margin-bottom: 4px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -81,15 +84,17 @@
     input {
       width: 100%;
       padding: 10px 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 12px;
       font-size: 0.9rem;
       font-family: inherit;
+      background: #fff;
     }
 
     input:focus {
       outline: none;
-      border-color: var(--gold);
+      border-color: var(--color-teal);
+      box-shadow: 0 0 0 3px rgba(24, 107, 98, 0.12);
     }
 
     .buttons-row {
@@ -100,9 +105,9 @@
     }
 
     .btn {
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 0.9rem;
+      padding: 11px 20px;
+      border-radius: 25px;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -110,24 +115,26 @@
       gap: 6px;
       border: none;
       transition: all 0.2s;
+      text-decoration: none;
     }
 
     .btn-primary {
-      background: var(--gold);
+      background: var(--color-teal);
       color: #fff;
     }
 
     .btn-primary:hover {
-      background: var(--gold-dark);
+      background: var(--color-teal-dark);
     }
 
     .btn-secondary {
-      background: #edf2f7;
-      color: var(--text-dark);
+      background: var(--color-mauve-light);
+      color: var(--color-mauve);
+      border: 1px solid var(--color-border);
     }
 
     .btn-secondary:hover {
-      background: #e2e8f0;
+      background: #ebd8d8;
     }
 
     /* Vista previa de la tarjeta para las mesas */
@@ -139,20 +146,21 @@
 
     .wedding-card {
       width: 440px;
-      height: 600px;
+      height: 620px;
       background: var(--card-bg);
-      border: 2px solid var(--border-gold);
+      border: 2px solid var(--color-mauve);
       position: relative;
-      padding: 30px 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 28px 24px 22px;
+      box-shadow: 0 10px 32px rgba(184, 123, 135, 0.18);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
       text-align: center;
+      border-radius: 4px;
     }
 
-    /* Marco interno ornamental */
+    /* Marco interior */
     .wedding-card::after {
       content: '';
       position: absolute;
@@ -160,29 +168,34 @@
       left: 8px;
       right: 8px;
       bottom: 8px;
-      border: 1px solid var(--border-gold);
+      border: 1px solid var(--color-border);
       pointer-events: none;
     }
 
-    .card-header-ornament {
-      color: var(--border-gold);
-      font-size: 16px;
-      letter-spacing: 4px;
+    .card-top-seal {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      margin: 0 auto 4px;
+      box-shadow: 0 4px 12px rgba(184, 123, 135, 0.3);
+      display: block;
     }
 
     .card-couple {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: var(--text-dark);
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.1rem;
+      font-weight: 400;
+      color: var(--color-teal);
       line-height: 1.1;
-      margin: 4px 0 2px;
+      margin: 2px 0 2px;
     }
 
     .card-subtitle {
-      font-size: 0.95rem;
-      color: var(--border-gold);
+      font-size: 0.75rem;
+      color: var(--color-mauve);
       font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       margin-bottom: 2px;
     }
 
@@ -194,55 +207,56 @@
     /* Contenedor del QR */
     .qr-box {
       background: #ffffff;
-      padding: 12px;
-      border: 1.5px solid var(--border-gold);
-      border-radius: 8px;
-      margin: 10px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      padding: 10px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 12px;
+      margin: 8px 0;
+      box-shadow: 0 4px 14px rgba(24, 107, 98, 0.08);
     }
 
     .qr-box img {
-      width: 180px;
-      height: 180px;
+      width: 190px;
+      height: 190px;
       display: block;
     }
 
-    /* Pasos */
+    /* Instrucciones */
     .instructions-title {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      color: var(--border-gold);
+      color: var(--color-teal);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       margin-bottom: 6px;
     }
 
     .steps-list {
       list-style: none;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       line-height: 1.45;
       color: var(--text-dark);
     }
 
     .steps-list li {
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .card-url {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--text-muted);
-      margin-top: 6px;
+      margin-top: 4px;
       word-break: break-all;
     }
 
     .card-footer-date {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem;
-      font-style: italic;
-      color: var(--border-gold);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--color-mauve);
+      text-transform: uppercase;
     }
 
-    /* Reglas para imprimir directamente (Ctrl+P) */
+    /* Reglas para imprimir */
     @media print {
       body {
         background: transparent;
@@ -264,13 +278,13 @@
   <!-- Panel de control -->
   <div class="controls-panel">
     <div class="panel-title">
-      <span>🖨️</span> Configurar e Imprimir Tarjeta QR de Mesa
+      <span>🖨️</span> Configurar e Imprimir Tarjeta de Mesa
     </div>
     
     <div class="form-row">
       <div class="form-group" style="flex: 2;">
         <label for="urlInput">URL a donde lleva el QR</label>
-        <input type="text" id="urlInput" value="{{ default_url }}" placeholder="https://tu-boda.vercel.app">
+        <input type="text" id="urlInput" value="{{ default_url }}" placeholder="https://boda-genesis-andres.onrender.com">
       </div>
       <div class="form-group">
         <label for="namesInput">Nombres de los Novios</label>
@@ -303,7 +317,7 @@
     <div class="wedding-card" id="cardElement">
       
       <div>
-        <div class="card-header-ornament">—  ✦  —</div>
+        <img class="card-top-seal" src="/static/monograma.png" alt="Sello de los novios">
         <h2 class="card-couple" id="cardCoupleText">{{ couple_names }}</h2>
         <div class="card-subtitle">¿Tomaste fotos o videos hoy?</div>
         <div class="card-callout">¡Ayúdanos a guardar cada recuerdo de nuestra boda!</div>
@@ -314,7 +328,7 @@
       </div>
 
       <div>
-        <div class="instructions-title">¿CÓMO COMPARTIRLAS?</div>
+        <div class="instructions-title">—o   ¿CÓMO COMPARTIRLAS?   o—</div>
         <ul class="steps-list">
           <li><strong>1.</strong> Abre la cámara de tu teléfono móvil</li>
           <li><strong>2.</strong> Apunta y escanea este código QR</li>
@@ -323,7 +337,7 @@
         <div class="card-url" id="cardUrlText">{{ default_url }}</div>
       </div>
 
-      <div class="card-footer-date" id="cardDateText">{{ event_date }}</div>
+      <div class="card-footer-date" id="cardDateText">✦ {{ event_date }} ✦</div>
 
     </div>
   </div>
@@ -339,15 +353,16 @@
     const btnDownload = document.getElementById('btnDownload');
 
     function updatePreview() {
-      const url = encodeURIComponent(urlInput.value.trim() || window.location.origin);
+      const rawUrl = urlInput.value.trim() || window.location.origin;
+      const url = encodeURIComponent(rawUrl);
       const couple = encodeURIComponent(namesInput.value.trim());
       const date = encodeURIComponent(dateInput.value.trim());
 
       cardCoupleText.textContent = namesInput.value.trim();
-      cardDateText.textContent = dateInput.value.trim();
-      cardUrlText.textContent = urlInput.value.trim();
+      cardDateText.textContent = `✦ ${dateInput.value.trim()} ✦`;
+      cardUrlText.textContent = rawUrl;
 
-      // Actualizar imagen QR central
+      // Actualizar imagen QR central (con verde esmeralda y monograma en el centro)
       qrImage.src = `/api/generate-qr?card=false&url=${url}&t=${Date.now()}`;
 
       // Actualizar enlace de descarga de la tarjeta de alta resolución
@@ -358,7 +373,6 @@
     namesInput.addEventListener('input', updatePreview);
     dateInput.addEventListener('input', updatePreview);
 
-    // Inicializar
     updatePreview();
   </script>
 </body>

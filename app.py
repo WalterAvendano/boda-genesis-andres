@@ -4,8 +4,20 @@ import socket
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file
 from dotenv import load_dotenv
-import qrcode
-from PIL import Image
+
+# Importar servicio de Google Drive y QR
+from drive_service import upload_file_to_drive, check_drive_connection, UPLOAD_FOLDER
+from generate_qr import create_wedding_qr_card, generate_qr_with_logo
+
+load_dotenv()
+
+app = Flask(__name__)
+# Permitir subidas de hasta 500 MB (para videos de alta resolución)
+app.config["MAX_CONTENT_LENGTH"] = 500 * 1024 * 1024
+
+COUPLE_NAMES = os.getenv("COUPLE_NAMES", "Génesis & Andrés")
+EVENT_DATE = os.getenv("EVENT_DATE", "14 de Noviembre, 2026")
+WELCOME_MESSAGE = os.getenv("WELCOME_MESSAGE", "¡Bienvenidos a nuestra boda! Gracias por acompañarnos en este día tan especial. Sube aquí tus fotos y videos para que podamos revivir cada momento juntos.")
 
 def get_local_ip():
     """Detecta la IP local de la computadora en la red Wi-Fi automáticamente."""
@@ -17,20 +29,6 @@ def get_local_ip():
         return ip
     except Exception:
         return "127.0.0.1"
-
-# Importar servicio de Google Drive
-from drive_service import upload_file_to_drive, check_drive_connection, UPLOAD_FOLDER
-from generate_qr import create_wedding_qr_card
-
-load_dotenv()
-
-app = Flask(__name__)
-# Permitir subidas de hasta 500 MB (para videos de alta resolución)
-app.config["MAX_CONTENT_LENGTH"] = 500 * 1024 * 1024
-
-COUPLE_NAMES = os.getenv("COUPLE_NAMES", "Ana & Carlos")
-EVENT_DATE = os.getenv("EVENT_DATE", "¡Nuestra Boda!")
-WELCOME_MESSAGE = os.getenv("WELCOME_MESSAGE", "Gracias por acompañarnos en este día tan especial. Sube aquí tus fotos y videos para que podamos revivir cada momento juntos.")
 
 @app.route("/")
 def index():
@@ -92,7 +90,7 @@ def qr_page():
 
 @app.route("/api/generate-qr", methods=["GET"])
 def get_qr_image():
-    """Genera la imagen del código QR plano o con tarjeta para imprimir."""
+    """Genera la imagen del código QR con monograma o con tarjeta completa para imprimir."""
     url = request.args.get("url", request.host_url).strip()
     with_card = request.args.get("card", "true").lower() == "true"
     couple = request.args.get("couple", COUPLE_NAMES)
@@ -104,19 +102,10 @@ def get_qr_image():
         create_wedding_qr_card(url, str(temp_path), couple_names=couple, event_date=date_str)
         return send_file(temp_path, mimetype="image/png")
     else:
-        # Solo código QR
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_H,
-            box_size=10,
-            border=2,
-        )
-        qr.add_data(url)
-        qr.make(fit=True)
-        img = qr.make_image(fill_color="#2b2d42", back_color="#ffffff")
-        
+        # Código QR con monograma en el centro y color verde esmeralda
+        qr_img = generate_qr_with_logo(url, box_size=10)
         buf = io.BytesIO()
-        img.save(buf, format="PNG")
+        qr_img.save(buf, format="PNG")
         buf.seek(0)
         return send_file(buf, mimetype="image/png")
 
